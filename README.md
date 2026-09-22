@@ -10,4 +10,8 @@
 
 **Hey, I’m Frederick 👋**
 
-I build software, explore AI, and occasionally send a horse around a grid. Take a look at what I’ve been working on below.
+I build software, explore AI, and occasionally send a horse around a grid. My focus is software engineering, with a little AI mixed in.
+
+My projects range from [helping NJIT students plan their classes](https://github.com/KingFeddy/ScheduleBuilder) to [exploring faster vector search](https://github.com/KingFeddy/amx-graph-anns) and [teaching a neural network about heat](https://github.com/KingFeddy/HeatEquationPINN). I work with Python, TypeScript, and C++ across web apps, APIs, and experiments.
+
+Take a look at what I’ve been working on below.
