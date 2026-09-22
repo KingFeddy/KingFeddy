@@ -2,7 +2,7 @@ import {SIZE, TOTAL, TOUR, legalMoves, move, status} from './tour.mjs';
 const root = document.getElementById('knights-tour-game');
 const q = selector => root.querySelector(selector);
 const motion = matchMedia('(prefers-reduced-motion: reduce)');
-let mode = 'play', running = !motion.matches, index = 7, path = [0], previous = -1, lastTime = performance.now();
+let mode = 'play', running = !motion.matches, index = 0, path = [0], previous = -1, lastTime = performance.now();
 const cells = Array.from({length: TOTAL}, (_, i) => {
   const button = document.createElement('button');
   button.type = 'button';
@@ -28,11 +28,11 @@ function render() {
   const history = mode === 'play' ? path : TOUR.slice(0, index + 1);
   const current = history.at(-1);
   const legal = legalMoves(history);
-  const trail = mode === 'play' ? path.slice(-10) : Array.from({length: 10}, (_, i) => TOUR[(index - 9 + i + TOTAL) % TOTAL]);
+  const trail = mode === 'play' ? path.slice(-10) : TOUR.slice(Math.max(0, index - 9), index + 1);
   root.dataset.paused = String(!running);
   cells.forEach((button, i) => {
     const age = trail.lastIndexOf(i);
-    button.className = 'kt-square' + (i === current ? ' current' : '') + (legal.includes(i) ? ' legal' : '') + (mode === 'play' && history.includes(i) && i !== current ? ' used' : '');
+    button.className = 'kt-square' + (i === current ? ' current' : '') + (legal.includes(i) ? ' legal' : '');
     button.style.background = mode === 'play'
       ? (history.includes(i) ? 'color-mix(in srgb,var(--kt-green) 50%,var(--kt-tile))' : '')
       : (age < 0 ? '' : `color-mix(in srgb,var(--kt-green) ${Math.round(12 + age / 9 * 55)}%,var(--kt-tile))`);
@@ -59,7 +59,13 @@ function render() {
   if (q('.kt-status').textContent !== message) q('.kt-status').textContent = message;
 }
 q('.kt-try').addEventListener('click', () => { mode = 'play'; path = [0]; render(); });
-q('.kt-back').addEventListener('click', () => { mode = 'watch'; lastTime = performance.now(); render(); });
+q('.kt-back').addEventListener('click', () => {
+  mode = 'watch';
+  index = 0;
+  running = !motion.matches;
+  lastTime = performance.now();
+  render();
+});
 q('.kt-pause').addEventListener('click', () => { running = !running; lastTime = performance.now(); render(); });
 motion.addEventListener('change', () => { if (motion.matches) running = false; render(); });
 new ResizeObserver(() => positionKnight(mode === 'play' ? path.at(-1) : TOUR[index])).observe(q('.kt-board'));
