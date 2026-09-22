@@ -33,6 +33,13 @@ def discrete(values):
             f'calcMode="discrete" keyTimes="{";".join(map(num, times))}" '
             f'values="{";".join(map(str, values + [values[0]]))}"/>')
 
+def trail_steps(visit):
+    # Age the glow by completed moves, including the longer hold at move 36.
+    arrivals = [((visit + age) // 36) * PERIOD + ((visit + age) % 36) * MOVE
+                - visit * MOVE for age in range(11)]
+    levels = [1] + [.12 + (9 - age) / 9 * .55 for age in range(1, 10)] + [0]
+    return arrivals + [PERIOD], levels + [0]
+
 def render(theme):
     bg, fg, muted, tile, dot = THEMES[theme]
     out = [f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-labelledby="title desc">',
@@ -42,14 +49,14 @@ def render(theme):
     for square in range(36):
         x, y = xy(square)
         visit = TOUR.index(square)
-        hold = LAST_HOLD if visit == 35 else HOLD
+        fade_times, fade_levels = trail_steps(visit)
         # Delayed start means unvisited squares have no trail on first load.
-        # Each square's own timeline continues through the main tour boundary.
+        # Each square advances one fade step per arrival, across loop boundaries.
         out += [f'<rect x="{x}" y="{y}" width="{CELL}" height="{CELL}" rx="11" fill="{tile}"/>',
                 f'<rect x="{x}" y="{y}" width="{CELL}" height="{CELL}" rx="11" fill="#62b582" opacity="0">',
                 f'<animate attributeName="opacity" begin="{num(visit * MOVE)}s" dur="{num(PERIOD)}s" repeatCount="indefinite" '
-                f'keyTimes="0;{num(hold / PERIOD)};{num((hold + .3) / PERIOD)};{num((hold + 7) / PERIOD)};1" '
-                'values="1;1;.67;0;0"/>', '</rect>']
+                f'calcMode="discrete" keyTimes="{";".join(num(t / PERIOD) for t in fade_times)}" '
+                f'values="{";".join(map(num, fade_levels))}"/>', '</rect>']
         values = [int(visit > i and legal(TOUR[i], square)) for i in range(36)]
         if any(values):
             out += [f'<circle cx="{x + CELL / 2}" cy="{y + CELL / 2}" r="5" fill="{dot}" opacity="{values[0]}">', discrete(values), '</circle>']
