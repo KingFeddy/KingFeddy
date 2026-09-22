@@ -24,9 +24,9 @@ for size,font in fonts.items():
         font.set_variation_by_axes([500 if axis['name']==b'Weight' and size==44 else min(max(size,axis['minimum']),axis['maximum']) if axis['name']==b'Optical Size' else axis['default'] for axis in axes])
     except OSError:
         pass  # Non-variable fonts supplied through --font.
-knight_font = ImageFont.truetype(PIECE,98)
-W,H=1000,600
-BOARD_X,BOARD_Y,CELL,GAP=16,16,88,8
+knight_font = ImageFont.truetype(PIECE,88)
+W,H=1000,541
+BOARD_X,BOARD_Y,CELL,GAP=46,16,79,7
 STEP=CELL+GAP
 GREEN=(98,181,130)
 def rgb(hex): return tuple(bytes.fromhex(hex.lstrip('#')))
@@ -55,11 +55,11 @@ def frame(theme,index,next_index=None,t=0):
     y=BOARD_Y+((current//6)*(1-ease)+(next_square//6)*ease)*STEP+CELL/2-9*math.sin(t*math.pi)
     # Pale piece stays legible while it crosses the darker cells.
     draw.text((x,y),'♞',font=knight_font,fill=fg,anchor='mm',stroke_width=2,stroke_fill=bg)
-    tx=624
+    tx=604
     for i,line in enumerate(['One knight.','Every square.','Exactly once.']):
-        draw.text((tx,170+i*54),line,font=fonts[44],fill=fg)
-    draw.text((tx,376),f'{index+1:02}',font=fonts[36],fill=fg)
-    draw.text((tx+66,389),'/ 36 squares',font=fonts[20],fill=muted)
+        draw.text((tx,140+i*54),line,font=fonts[44],fill=fg)
+    draw.text((tx,346),f'{index+1:02}',font=fonts[36],fill=fg)
+    draw.text((tx+66,359),'/ 36 squares',font=fonts[20],fill=muted)
     return image
 
 themes={
