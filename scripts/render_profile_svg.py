@@ -86,8 +86,8 @@ def render(theme):
         out.append(f'<text x="604" y="{182 + index * 54}" font-size="44" font-weight="500" letter-spacing="-1">{escape(line)}</text>')
     for index in range(36):
         values = [int(i == index) for i in range(36)]
-        out += [f'<text x="604" y="374" font-size="36" opacity="{values[0]}">{index + 1:02}', discrete(values), '</text>']
-    out += [f'<text x="670" y="378" font-size="20" fill="{muted}">/ 36 squares</text>', '</g>', '</svg>']
+        out += [f'<text x="650" y="374" text-anchor="end" font-variant-numeric="tabular-nums" font-size="36" opacity="{values[0]}">{index + 1:02}', discrete(values), '</text>']
+    out += [f'<text x="666" y="374" font-size="20" fill="{muted}">/ 36 squares</text>', '</g>', '</svg>']
     return '\n'.join(out)
 
 if __name__ == '__main__':
