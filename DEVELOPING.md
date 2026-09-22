@@ -3,7 +3,7 @@
 This repository powers the profile at https://github.com/KingFeddy and the game at https://kingfeddy.github.io/KingFeddy/.
 
 - `README.md` is the profile. Its images and play link point to the game.
-- `assets/` contains light/dark GIF animations and still images for reduced motion.
+- `assets/` contains light/dark GIF animations and optional still images. GitHub’s own animation preference controls profile playback.
 - `docs/` contains the standalone game, published with GitHub Pages from `main` → `/docs`.
 - `docs/tour.mjs` contains the 6×6 board rules and verified closed tour.
 - `scripts/render_animation.py` regenerates the README images using Pillow.
@@ -26,7 +26,7 @@ Use Python 3 with Pillow installed:
 python3 scripts/render_animation.py
 ```
 
-The script detects common macOS/Linux fonts. Supply `--font` and `--piece-font` if needed; the piece font must contain the ♞ glyph. Images are generated locally. Commit the updated files in `assets/` to update the profile. The animation begins at move 1, uses the game’s 700 ms move interval, holds the win message for 1.2 seconds, and then loops. Visited squares stay green. The reduced-motion images also show move 1. After committing regenerated assets, pin the image URLs in `README.md` to that commit SHA to avoid serving an older cached image. GitHub controls README playback; a restart on every browser refresh cannot be forced with README markup.
+The script detects common macOS/Linux fonts. Supply `--font` and `--piece-font` if needed; the piece font must contain the ♞ glyph. Images are generated locally. Commit the updated files in `assets/` to update the profile. The animation begins at move 1, uses the game’s 700 ms move interval, holds the win message for 1.2 seconds, and then loops. Visited squares stay green. The optional still images also show move 1. Do not select them with a README reduced-motion media query: that can override an explicit GitHub autoplay preference. After committing regenerated assets, pin the image URLs in `README.md` to that commit SHA to avoid serving an older cached image. GitHub controls README playback; a restart on every browser refresh cannot be forced with README markup.
 
 ## Preview the game
 
