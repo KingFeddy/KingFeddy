@@ -14,12 +14,19 @@ def find_font(explicit, candidates):
     for path in candidates:
         if Path(path).is_file(): return path
     raise SystemExit('Provide --font and --piece-font paths available on this machine.')
-FONT = find_font(args.font, ['/System/Library/Fonts/Supplemental/Arial.ttf','/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'])
+FONT = find_font(args.font, ['/System/Library/Fonts/SFNS.ttf','/System/Library/Fonts/Supplemental/Arial.ttf','/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'])
 PIECE = find_font(args.piece_font, ['/System/Library/Fonts/Apple Symbols.ttf','/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'])
-fonts = {n:ImageFont.truetype(FONT,n) for n in [13,14,16,19,28,36]}
-knight_font = ImageFont.truetype(PIECE,50)
-W,H=720,368
-BOARD_X,BOARD_Y,CELL,GAP=25,48,45,5
+fonts = {n:ImageFont.truetype(FONT,n) for n in [20,36,44]}
+# Match the game's macOS system font and medium heading weight.
+for size,font in fonts.items():
+    try:
+        axes=font.get_variation_axes()
+        font.set_variation_by_axes([500 if axis['name']==b'Weight' and size==44 else min(max(size,axis['minimum']),axis['maximum']) if axis['name']==b'Optical Size' else axis['default'] for axis in axes])
+    except OSError:
+        pass  # Non-variable fonts supplied through --font.
+knight_font = ImageFont.truetype(PIECE,98)
+W,H=1000,600
+BOARD_X,BOARD_Y,CELL,GAP=16,16,88,8
 STEP=CELL+GAP
 GREEN=(98,181,130)
 def rgb(hex): return tuple(bytes.fromhex(hex.lstrip('#')))
@@ -31,7 +38,6 @@ def frame(theme,index,next_index=None,t=0):
     image=Image.new('RGB',(W,H),bg);draw=ImageDraw.Draw(image)
     current=TOUR[index]
     visited=set(TOUR[:index+1])
-    draw.text((BOARD_X,10),'Horseplay',fill=fg,font=fonts[19])
     for square in range(36):
         fill=tile
         if square in visited:
@@ -39,23 +45,21 @@ def frame(theme,index,next_index=None,t=0):
             if age < 10:fill=mix(tile,GREEN,.12+(9-age)/9*.55)
         if square==current:fill=GREEN
         x,y=BOARD_X+square%6*STEP,BOARD_Y+square//6*STEP
-        draw.rounded_rectangle((x,y,x+CELL-1,y+CELL-1),radius=6,fill=fill)
+        draw.rounded_rectangle((x,y,x+CELL-1,y+CELL-1),radius=11,fill=fill)
         if square not in visited and legal(current,square):
             cx,cy=x+CELL/2,y+CELL/2
-            draw.ellipse((cx-3,cy-3,cx+3,cy+3),fill=dot)
+            draw.ellipse((cx-5,cy-5,cx+5,cy+5),fill=dot)
     next_square=TOUR[next_index] if next_index is not None else current
     ease=t*t*(3-2*t)
     x=BOARD_X+((current%6)*(1-ease)+(next_square%6)*ease)*STEP+CELL/2
-    y=BOARD_Y+((current//6)*(1-ease)+(next_square//6)*ease)*STEP+CELL/2-5*math.sin(t*math.pi)
+    y=BOARD_Y+((current//6)*(1-ease)+(next_square//6)*ease)*STEP+CELL/2-9*math.sin(t*math.pi)
     # Pale piece stays legible while it crosses the darker cells.
-    draw.text((x,y),'♞',font=knight_font,fill=fg,anchor='mm',stroke_width=1,stroke_fill=bg)
-    tx=382
-    draw.text((tx,64),'A COMPLETE TOUR',font=fonts[13],fill=muted)
-    lines = ["Make 'em", 'dance!']
-    for i,line in enumerate(lines):
-        draw.text((tx,110+i*44),line,font=fonts[36],fill=fg)
-    draw.text((tx,242),f'{index+1:02}',font=fonts[28],fill=fg)
-    draw.text((tx+46,254),'/ 36 squares',font=fonts[14],fill=muted)
+    draw.text((x,y),'♞',font=knight_font,fill=fg,anchor='mm',stroke_width=2,stroke_fill=bg)
+    tx=624
+    for i,line in enumerate(['One knight.','Every square.','Exactly once.']):
+        draw.text((tx,170+i*54),line,font=fonts[44],fill=fg)
+    draw.text((tx,376),f'{index+1:02}',font=fonts[36],fill=fg)
+    draw.text((tx+66,389),'/ 36 squares',font=fonts[20],fill=muted)
     return image
 
 themes={
@@ -68,9 +72,9 @@ for theme in themes:
     # Use the animation's exact glyph, placement, and colors in the browser too.
     # A 4x transparent asset avoids OS-dependent font substitution and stays crisp.
     scale=4
-    piece=Image.new('RGBA',(CELL*scale,CELL*scale),(0,0,0,0))
+    piece=Image.new('RGBA',(45*scale,45*scale),(0,0,0,0))
     ImageDraw.Draw(piece).text(
-        (CELL*scale/2,CELL*scale/2),'♞',
+        (45*scale/2,45*scale/2),'♞',
         font=ImageFont.truetype(PIECE,50*scale),fill=themes[theme][1],
         anchor='mm',stroke_width=scale,stroke_fill=themes[theme][0])
     piece.save(pieces/f'knight-{theme}.png',optimize=True)

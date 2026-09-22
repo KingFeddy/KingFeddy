@@ -53,7 +53,7 @@ function render() {
   const result = status(history);
   const heading = mode === 'play' && result === 'blocked' ? "You're stuck.<br>GGs"
     : mode === 'play' && result === 'complete' ? 'Good Job!<br>Take this 🏆'
-    : "Make 'em<br>dance<span>!</span>";
+    : "One knight.<br>Every square.<br>Exactly once<span>.</span>";
   if (q('h2').innerHTML !== heading) q('h2').innerHTML = heading;
 }
 q('.kt-try').addEventListener('click', () => { mode = 'play'; path = [0]; render(); });
