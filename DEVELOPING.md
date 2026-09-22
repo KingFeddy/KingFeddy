@@ -3,10 +3,11 @@
 This repository powers the profile at https://github.com/KingFeddy and the game at https://kingfeddy.github.io/KingFeddy/.
 
 - `README.md` is the profile. Its images and play link point to the game.
-- `assets/` contains light/dark GIF animations and optional still images. GitHub’s own animation preference controls profile playback.
+- `assets/` contains the active light/dark SVG animations, plus older GIF and still-image exports.
 - `docs/` contains the standalone game, published with GitHub Pages from `main` → `/docs`.
 - `docs/tour.mjs` contains the 6×6 board rules and verified closed tour.
-- `scripts/render_animation.py` regenerates the README images using Pillow.
+- `scripts/render_profile_svg.py` generates the active README animation with native SVG animation (no JavaScript).
+- `scripts/render_animation.py` maintains the older GIF/still exports and shared knight PNGs using Pillow.
 
 The board depicts a puzzle, not contribution history. The game requires no account, external service, build process, or data collection.
 
@@ -26,7 +27,9 @@ Use Python 3 with Pillow installed:
 python3 scripts/render_animation.py
 ```
 
-The script uses the same macOS system font as the game when available, with a common Linux font fallback. The profile graphic fills the README width and prioritizes the board; its title and instruction caption are intentionally omitted. Supply `--font` and `--piece-font` if needed; the piece font must contain the ♞ glyph. Images are generated locally. Commit the updated files in `assets/` to update the profile. The animation begins at move 1, uses the game’s 700 ms move interval, holds the last move for 1.2 seconds, and then loops. The profile animation uses a fading ten-square trail and keeps “One knight. Every square. Exactly once.” throughout; the playable game keeps permanent green squares and its win message. The optional still images also show move 1. Do not select them with a README reduced-motion media query: that can override an explicit GitHub autoplay preference. After committing regenerated assets, pin the image URLs in `README.md` to that commit SHA to avoid serving an older cached image. GitHub controls README playback; a restart on every browser refresh cannot be forced with README markup.
+The active profile uses `python3 scripts/render_profile_svg.py`. It reuses the game’s knight PNGs and renders vector tiles and system-font text. Each square starts fading only after its first visit, on an independent repeating timeline. This keeps the first load clean and carries the last squares’ glow into subsequent loops. The knight follows the closed tour back to the top-left square, with the counter returning to 01 on arrival. Normal moves take 700 ms; move 36 holds for 1.2 seconds before the final hop. The game itself is independent and retains permanent visited squares.
+
+After committing regenerated SVGs, pin the image URLs in `README.md` to that commit SHA to avoid stale cached artwork. The Pillow script above remains available for GIF and PNG exports, but GIF cannot represent a one-time clean introduction followed by a different seamless loop.
 
 ## Preview the game
 
