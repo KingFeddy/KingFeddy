@@ -7,3 +7,7 @@
   </a>
 </p>
 <h3 align="center"><a href="https://kingfeddy.github.io/KingFeddy/">Try the Challenge ↗</a></h3>
+
+**Hey, I’m Frederick 👋**
+
+I build software, explore AI, and occasionally send a horse around a grid. Take a look at what I’ve been working on below.
