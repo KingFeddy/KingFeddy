@@ -52,7 +52,7 @@ function render() {
   q('.kt-kicker').textContent = mode === 'play' ? 'YOUR MOVE' : 'A COMPLETE TOUR';
   const result = status(history);
   const heading = mode === 'play' && result === 'blocked' ? "You're stuck.<br>GGs"
-    : mode === 'play' && result === 'complete' ? 'Tour complete<span>!</span>'
+    : mode === 'play' && result === 'complete' ? 'Good Job!<br>Take this 🏆'
     : "Make 'em<br>dance<span>!</span>";
   if (q('h2').innerHTML !== heading) q('h2').innerHTML = heading;
 }
@@ -69,7 +69,7 @@ motion.addEventListener('change', () => { if (motion.matches) running = false; r
 new ResizeObserver(() => positionKnight(mode === 'play' ? path.at(-1) : TOUR[index])).observe(q('.kt-board'));
 render();
 function frame(now) {
-  if (mode === 'watch' && running && !document.hidden && now - lastTime > (index === TOTAL - 1 ? 1800 : 1050)) {
+  if (mode === 'watch' && running && !document.hidden && now - lastTime > (index === TOTAL - 1 ? 1200 : 700)) {
     lastTime = now;
     index = (index + 1) % TOTAL;
     render();
