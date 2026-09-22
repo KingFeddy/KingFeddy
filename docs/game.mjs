@@ -51,7 +51,9 @@ function render() {
   q('.kt-back').hidden = mode === 'watch';
   q('.kt-kicker').textContent = mode === 'play' ? 'YOUR MOVE' : 'A COMPLETE TOUR';
   const result = status(history);
-  const message = mode === 'watch' ? "Make 'em dance" : result === 'complete' ? 'Tour complete. All 36 squares, exactly once.' : result === 'blocked' ? "You're stuck. Gg" : "Make 'em dance";
+  const heading = mode === 'play' && result === 'blocked' ? "You're stuck.<br>GGs" : "Make 'em<br>dance<span>!</span>";
+  if (q('h2').innerHTML !== heading) q('h2').innerHTML = heading;
+  const message = mode === 'play' && result === 'complete' ? 'Tour complete. All 36 squares, exactly once.' : "Make 'em dance";
   if (q('.kt-status').textContent !== message) q('.kt-status').textContent = message;
 }
 q('.kt-try').addEventListener('click', () => { mode = 'play'; path = [0]; render(); });
