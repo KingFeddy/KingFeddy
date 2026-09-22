@@ -18,7 +18,7 @@ FONT = find_font(args.font, ['/System/Library/Fonts/Supplemental/Arial.ttf','/us
 PIECE = find_font(args.piece_font, ['/System/Library/Fonts/Apple Symbols.ttf','/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'])
 fonts = {n:ImageFont.truetype(FONT,n) for n in [13,14,16,19,28,36]}
 knight_font = ImageFont.truetype(PIECE,50)
-W,H=720,390
+W,H=720,368
 BOARD_X,BOARD_Y,CELL,GAP=25,48,45,5
 STEP=CELL+GAP
 GREEN=(98,181,130)
@@ -30,12 +30,11 @@ def frame(theme,index,next_index=None,t=0):
     bg,fg,muted,tile,dot = themes[theme]
     image=Image.new('RGB',(W,H),bg);draw=ImageDraw.Draw(image)
     current=TOUR[index]
-    trail=[TOUR[(index-9+i)%36] for i in range(10)]
     visited=set(TOUR[:index+1])
-    draw.text((BOARD_X,12),'KNIGHT’S TOUR',fill=muted,font=fonts[13])
+    draw.text((BOARD_X,10),'Horseplay',fill=fg,font=fonts[19])
     for square in range(36):
         fill=tile
-        if square in trail:fill=mix(tile,GREEN,.12+trail.index(square)/9*.55)
+        if square in visited:fill=mix(tile,GREEN,.5)
         if square==current:fill=GREEN
         x,y=BOARD_X+square%6*STEP,BOARD_Y+square//6*STEP
         draw.rounded_rectangle((x,y,x+CELL-1,y+CELL-1),radius=6,fill=fill)
@@ -49,22 +48,28 @@ def frame(theme,index,next_index=None,t=0):
     # Pale piece stays legible while it crosses the darker cells.
     draw.text((x,y),'♞',font=knight_font,fill=fg,anchor='mm',stroke_width=1,stroke_fill=bg)
     tx=382
-    draw.text((tx,64),'A SMALL CHESS DETOUR',font=fonts[13],fill=muted)
-    for i,line in enumerate(['One knight.','Every square.','Exactly once.']):
-        draw.text((tx,100+i*41),line,font=fonts[36],fill=fg)
+    draw.text((tx,64),'A COMPLETE TOUR',font=fonts[13],fill=muted)
+    lines = ['Good Job!', 'Take this'] if index == 35 else ["Make 'em", 'dance!']
+    for i,line in enumerate(lines):
+        draw.text((tx,110+i*44),line,font=fonts[36],fill=fg)
+    if index == 35:
+        image.paste(trophy,(tx+165,150),trophy)
     draw.text((tx,242),f'{index+1:02}',font=fonts[28],fill=fg)
     draw.text((tx+46,254),'/ 36 squares',font=fonts[14],fill=muted)
-    draw.ellipse((tx,296,tx+6,302),fill=dot)
-    draw.text((tx+16,291),'Available move',font=fonts[14],fill=muted)
-    draw.line((25,362,695,362),fill=mix(bg,muted,.25))
-    draw.text((25,372),'A little strategy between commits.',font=fonts[13],fill=muted)
-    draw.text((625,372),'KingFeddy',font=fonts[13],fill=muted)
     return image
 
 themes={
  'dark':tuple(map(rgb,['#0d1117','#e6edf3','#98a5b3','#19241f','#9addae'])),
  'light':tuple(map(rgb,['#ffffff','#1f2328','#59636e','#e8eee9','#286c43']))
 }
+# Render the same trophy emoji used in the game; use a portable glyph fallback.
+trophy=Image.new('RGBA',(72,72),(0,0,0,0))
+emoji_path=Path('/System/Library/Fonts/Apple Color Emoji.ttc')
+if emoji_path.is_file():
+    ImageDraw.Draw(trophy).text((0,0),'🏆',font=ImageFont.truetype(str(emoji_path),64),embedded_color=True)
+else:
+    ImageDraw.Draw(trophy).text((4,0),'🏆',font=ImageFont.truetype(PIECE,64),fill='#e9b949')
+trophy=trophy.resize((40,40),Image.Resampling.LANCZOS)
 assets=ROOT/'assets';assets.mkdir(exist_ok=True)
 pieces=ROOT/'docs/assets';pieces.mkdir(exist_ok=True)
 for theme in themes:
@@ -82,13 +87,14 @@ for theme in themes:
     for i,k in enumerate([0,7,18,35]):sample.paste(frame(theme,k),(0,H*i))
     palette=sample.quantize(colors=96,method=Image.Quantize.MEDIANCUT)
     frames=[];durations=[]
-    for offset in range(36):
-        index=(7+offset)%36
+    for index in range(36):
         still=frame(theme,index)
-        frames.append(still.quantize(palette=palette,dither=Image.Dither.NONE));durations.append(420 if index!=35 else 1400)
+        frames.append(still.quantize(palette=palette,dither=Image.Dither.NONE));durations.append(400 if index!=35 else 1200)
+        # Reset directly to move 1 after the completed board.
+        if index == 35: continue
         for step in range(1,7):
-            frames.append(frame(theme,index,(index+1)%36,step/7).quantize(palette=palette,dither=Image.Dither.NONE));durations.append(60)
+            frames.append(frame(theme,index,(index+1)%36,step/7).quantize(palette=palette,dither=Image.Dither.NONE));durations.append(50)
     target=assets/f'knights-tour-{theme}.gif'
     frames[0].save(target,save_all=True,append_images=frames[1:],duration=durations,loop=0,optimize=True,disposal=1)
-    frame(theme,7).save(assets/f'knights-tour-{theme}.png',optimize=True)
+    frame(theme,0).save(assets/f'knights-tour-{theme}.png',optimize=True)
     print(f'{target.name}: {target.stat().st_size:,} bytes, {len(frames)} frames',flush=True)
