@@ -34,7 +34,9 @@ def frame(theme,index,next_index=None,t=0):
     draw.text((BOARD_X,10),'Horseplay',fill=fg,font=fonts[19])
     for square in range(36):
         fill=tile
-        if square in visited:fill=mix(tile,GREEN,.5)
+        if square in visited:
+            age=index-TOUR.index(square)
+            if age < 10:fill=mix(tile,GREEN,.12+(9-age)/9*.55)
         if square==current:fill=GREEN
         x,y=BOARD_X+square%6*STEP,BOARD_Y+square//6*STEP
         draw.rounded_rectangle((x,y,x+CELL-1,y+CELL-1),radius=6,fill=fill)
@@ -49,11 +51,9 @@ def frame(theme,index,next_index=None,t=0):
     draw.text((x,y),'♞',font=knight_font,fill=fg,anchor='mm',stroke_width=1,stroke_fill=bg)
     tx=382
     draw.text((tx,64),'A COMPLETE TOUR',font=fonts[13],fill=muted)
-    lines = ['Good Job!', 'Take this'] if index == 35 else ["Make 'em", 'dance!']
+    lines = ["Make 'em", 'dance!']
     for i,line in enumerate(lines):
         draw.text((tx,110+i*44),line,font=fonts[36],fill=fg)
-    if index == 35:
-        image.paste(trophy,(tx+165,150),trophy)
     draw.text((tx,242),f'{index+1:02}',font=fonts[28],fill=fg)
     draw.text((tx+46,254),'/ 36 squares',font=fonts[14],fill=muted)
     return image
@@ -62,14 +62,6 @@ themes={
  'dark':tuple(map(rgb,['#0d1117','#e6edf3','#98a5b3','#19241f','#9addae'])),
  'light':tuple(map(rgb,['#ffffff','#1f2328','#59636e','#e8eee9','#286c43']))
 }
-# Render the same trophy emoji used in the game; use a portable glyph fallback.
-trophy=Image.new('RGBA',(72,72),(0,0,0,0))
-emoji_path=Path('/System/Library/Fonts/Apple Color Emoji.ttc')
-if emoji_path.is_file():
-    ImageDraw.Draw(trophy).text((0,0),'🏆',font=ImageFont.truetype(str(emoji_path),64),embedded_color=True)
-else:
-    ImageDraw.Draw(trophy).text((4,0),'🏆',font=ImageFont.truetype(PIECE,64),fill='#e9b949')
-trophy=trophy.resize((40,40),Image.Resampling.LANCZOS)
 assets=ROOT/'assets';assets.mkdir(exist_ok=True)
 pieces=ROOT/'docs/assets';pieces.mkdir(exist_ok=True)
 for theme in themes:
