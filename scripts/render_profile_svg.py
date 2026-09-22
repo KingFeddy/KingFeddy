@@ -33,30 +33,31 @@ def discrete(values):
             f'calcMode="discrete" keyTimes="{";".join(map(num, times))}" '
             f'values="{";".join(map(str, values + [values[0]]))}"/>')
 
-def trail_steps(visit):
-    # Age the glow by completed moves, including the longer hold at move 36.
-    arrivals = [((visit + age) // 36) * PERIOD + ((visit + age) % 36) * MOVE
-                - visit * MOVE for age in range(11)]
-    levels = [1] + [.12 + (9 - age) / 9 * .55 for age in range(1, 10)] + [0]
-    return arrivals + [PERIOD], levels + [0]
+def trail_levels(visit):
+    # Every lap starts clean; age the trail only on completed moves.
+    levels = []
+    for move in range(36):
+        age = move - visit
+        levels.append(1 if age == 0 else .12 + (9 - age) / 9 * .55 if 0 < age < 10 else 0)
+    return levels
 
 def render(theme):
     bg, fg, muted, tile, dot = THEMES[theme]
     out = [f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-labelledby="title desc">',
            '<title id="title">One knight. Every square. Exactly once.</title>',
-           '<desc id="desc">A knight visits all 36 squares, then returns to the top left. Its fading trail continues across each loop.</desc>',
+           '<desc id="desc">A knight visits all 36 squares, then returns to the top left. Its fading trail clears as it returns to the start.</desc>',
            f'<rect width="{W}" height="{H}" fill="{bg}"/>']
     for square in range(36):
         x, y = xy(square)
         visit = TOUR.index(square)
-        fade_times, fade_levels = trail_steps(visit)
-        # Delayed start means unvisited squares have no trail on first load.
-        # Each square advances one fade step per arrival, across loop boundaries.
+        # Keep each move's glow stable, then fade all remaining glow during
+        # the final hop. Discrete values reset at the next lap's first move.
         out += [f'<rect x="{x}" y="{y}" width="{CELL}" height="{CELL}" rx="11" fill="{tile}"/>',
-                f'<rect x="{x}" y="{y}" width="{CELL}" height="{CELL}" rx="11" fill="#62b582" opacity="0">',
-                f'<animate attributeName="opacity" begin="{num(visit * MOVE)}s" dur="{num(PERIOD)}s" repeatCount="indefinite" '
-                f'calcMode="discrete" keyTimes="{";".join(num(t / PERIOD) for t in fade_times)}" '
-                f'values="{";".join(map(num, fade_levels))}"/>', '</rect>']
+                '<g>',
+                f'<animate attributeName="opacity" dur="{num(PERIOD)}s" repeatCount="indefinite" '
+                f'keyTimes="0;{num((PERIOD - .3) / PERIOD)};1" values="1;1;0"/>',
+                f'<rect x="{x}" y="{y}" width="{CELL}" height="{CELL}" rx="11" fill="#62b582" opacity="{trail_levels(visit)[0]}">',
+                discrete(trail_levels(visit)), '</rect>', '</g>']
         values = [int(visit > i and legal(TOUR[i], square)) for i in range(36)]
         if any(values):
             out += [f'<circle cx="{x + CELL / 2}" cy="{y + CELL / 2}" r="5" fill="{dot}" opacity="{values[0]}">', discrete(values), '</circle>']
