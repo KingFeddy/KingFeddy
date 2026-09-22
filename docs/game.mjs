@@ -33,7 +33,9 @@ function render() {
   cells.forEach((button, i) => {
     const age = trail.lastIndexOf(i);
     button.className = 'kt-square' + (i === current ? ' current' : '') + (legal.includes(i) ? ' legal' : '') + (mode === 'play' && history.includes(i) && i !== current ? ' used' : '');
-    button.style.background = age < 0 ? '' : `color-mix(in srgb,var(--kt-green) ${Math.round(12 + age / 9 * 55)}%,var(--kt-tile))`;
+    button.style.background = mode === 'play'
+      ? (history.includes(i) ? 'color-mix(in srgb,var(--kt-green) 50%,var(--kt-tile))' : '')
+      : (age < 0 ? '' : `color-mix(in srgb,var(--kt-green) ${Math.round(12 + age / 9 * 55)}%,var(--kt-tile))`);
     button.disabled = mode !== 'play' || !legal.includes(i);
     const coordinate = `${String.fromCharCode(65 + i % SIZE)}${SIZE - Math.floor(i / SIZE)}`;
     button.setAttribute('aria-label', coordinate + (i === current ? ', knight' : history.includes(i) ? ', visited' : legal.includes(i) ? ', available move' : ''));
