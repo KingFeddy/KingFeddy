@@ -26,7 +26,7 @@ Use Python 3 with Pillow installed:
 python3 scripts/render_animation.py
 ```
 
-The script detects common macOS/Linux fonts. Supply `--font` and `--piece-font` if needed; the piece font must contain the ♞ glyph. Images are generated locally. Commit the updated files in `assets/` to update the profile. The animation begins at move 1, uses the game’s 700 ms move interval, holds the win message for 1.2 seconds, and then loops. Visited squares stay green. The reduced-motion images also show move 1. Bump the image URL version in `README.md` after regenerating to avoid serving an older cached image. GitHub controls README playback; a restart on every browser refresh cannot be forced with README markup.
+The script detects common macOS/Linux fonts. Supply `--font` and `--piece-font` if needed; the piece font must contain the ♞ glyph. Images are generated locally. Commit the updated files in `assets/` to update the profile. The animation begins at move 1, uses the game’s 700 ms move interval, holds the win message for 1.2 seconds, and then loops. Visited squares stay green. The reduced-motion images also show move 1. After committing regenerated assets, pin the image URLs in `README.md` to that commit SHA to avoid serving an older cached image. GitHub controls README playback; a restart on every browser refresh cannot be forced with README markup.
 
 ## Preview the game
 
