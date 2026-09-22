@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="One knight. Every square. Exactly once. Try KingFeddy’s 6×6 knight’s tour.">
+  <title>Knight’s tour · KingFeddy</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="knights-tour-game" aria-label="Knight’s tour">
+  <nav><a href="https://github.com/KingFeddy">← KingFeddy on GitHub</a><span>6 × 6</span></nav>
+  <section class="kt-shell">
+    <div class="kt-top"><h1>Knight’s tour</h1><button type="button" class="kt-pause" hidden>Pause animation</button></div>
+    <div class="kt-layout">
+      <div class="kt-board" role="group" aria-label="Six by six knight’s tour board" aria-describedby="instructions"><div class="kt-grid"></div><div class="kt-knight" aria-hidden="true"><span>♞</span></div></div>
+      <div class="kt-copy"><div class="kt-kicker">YOUR MOVE</div><h2>One knight.<br>Every square.<br>Exactly once<span>.</span></h2><div class="kt-count" aria-label="Squares visited"><strong>01</strong><span>/ 36 squares</span></div><div class="kt-legend"><i></i> Available move</div><button type="button" class="kt-try">Start again <span aria-hidden="true">↻</span></button><button type="button" class="kt-back">Watch a complete tour</button></div>
+    </div>
+    <footer><span class="kt-status" role="status" aria-live="polite">Choose a dotted square. Visit each square once.</span><span class="kt-signature">♟ KingFeddy</span></footer>
+  </section>
+  <p id="instructions">Move two squares in one direction and one to the side—an L shape. Land on all 36 squares without repeating one.</p>
+  <noscript>This game needs JavaScript. Enable it, then refresh to play.</noscript>
+</main>
+<script type="module" src="game.mjs"></script>
+</body>
+</html>
