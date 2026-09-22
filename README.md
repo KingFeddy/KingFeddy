@@ -6,4 +6,4 @@
     </picture>
   </a>
 </p>
-<h2 align="center"><a href="https://kingfeddy.github.io/KingFeddy/">Try a Challenge ↗</a></h2>
+<h3 align="center"><a href="https://kingfeddy.github.io/KingFeddy/">Try a Challenge ↗</a></h3>
