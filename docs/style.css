@@ -25,3 +25,8 @@ body{margin:0;padding:40px 20px}
 #knights-tour-game #instructions{font-size:16px;line-height:1.65;color:var(--kt-muted);max-width:610px;margin:22px 2px}
 #knights-tour-game .kt-square.current{background:#62b582!important}
 @media(max-width:650px){body{padding:24px 12px}#knights-tour-game .kt-layout{flex-direction:column;padding:22px 16px;gap:22px}#knights-tour-game .kt-copy{width:318px;max-width:100%;display:grid;grid-template-columns:1fr auto;column-gap:12px;align-items:center}#knights-tour-game .kt-kicker{grid-column:1/-1}#knights-tour-game h2{grid-column:1;grid-row:2;font-size:26px;margin:12px 0}#knights-tour-game .kt-count{grid-column:2;grid-row:2;flex-direction:column;gap:2px}#knights-tour-game .kt-legend{grid-column:1/-1;margin:4px 0}#knights-tour-game .kt-try{grid-column:1/-1;justify-content:space-between;margin-top:14px}#knights-tour-game .kt-back{grid-column:1/-1;text-align:left}#knights-tour-game .kt-top{padding:18px 16px 0}}
+/* Match the README artwork instead of relying on a browser's chess font. */
+#knights-tour-game .kt-knight span,
+#knights-tour-game .kt-knight picture,
+#knights-tour-game .kt-knight img{display:block;width:100%;height:100%}
+#knights-tour-game .kt-knight img{object-fit:contain}

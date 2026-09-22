@@ -66,7 +66,17 @@ themes={
  'light':tuple(map(rgb,['#ffffff','#1f2328','#59636e','#e8eee9','#286c43']))
 }
 assets=ROOT/'assets';assets.mkdir(exist_ok=True)
+pieces=ROOT/'docs/assets';pieces.mkdir(exist_ok=True)
 for theme in themes:
+    # Use the animation's exact glyph, placement, and colors in the browser too.
+    # A 4x transparent asset avoids OS-dependent font substitution and stays crisp.
+    scale=4
+    piece=Image.new('RGBA',(CELL*scale,CELL*scale),(0,0,0,0))
+    ImageDraw.Draw(piece).text(
+        (CELL*scale/2,CELL*scale/2),'♞',
+        font=ImageFont.truetype(PIECE,50*scale),fill=themes[theme][1],
+        anchor='mm',stroke_width=scale,stroke_fill=themes[theme][0])
+    piece.save(pieces/f'knight-{theme}.png',optimize=True)
     # A shared palette prevents the static text from flickering between frames.
     sample=Image.new('RGB',(W,H*4))
     for i,k in enumerate([0,7,18,35]):sample.paste(frame(theme,k),(0,H*i))
