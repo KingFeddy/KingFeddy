@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://kingfeddy.github.io/KingFeddy/" aria-label="Play KingFeddy’s knight’s tour">
+  <a href="https://kingfeddy.github.io/KingFeddy/" aria-label="Play Horseplay by KingFeddy">
     <picture>
       <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/KingFeddy/KingFeddy/main/assets/knights-tour-dark.png">
       <source media="(prefers-reduced-motion: reduce)" srcset="https://raw.githubusercontent.com/KingFeddy/KingFeddy/main/assets/knights-tour-light.png">
@@ -9,7 +9,7 @@
   </a>
 </p>
 <p align="center">
-  <a href="https://kingfeddy.github.io/KingFeddy/"><strong>Try the knight’s tour ↗</strong></a>
+  <a href="https://kingfeddy.github.io/KingFeddy/"><strong>Play Horseplay ↗</strong></a>
   <br>
   <sub>One knight. Every square. Exactly once.</sub>
 </p>
